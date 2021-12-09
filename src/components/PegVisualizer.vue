@@ -132,7 +132,7 @@ export default {
       }
     },
     pegProgressClass(){
-      if (this.currentPegPercent.abs().isLessThanOrEqualTo(3)){
+      if (this.currentPegPercent.abs().isLessThanOrEqualTo(5)){
         return "green"
       } else if (this.currentPegPercent.abs().isLessThanOrEqualTo(7.5)) {
         return "yellow"
