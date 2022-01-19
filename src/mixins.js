@@ -186,8 +186,8 @@ export default {
             return this.$store.getOvenClient(this.$store.wallet, ovenAddress)
         },
         tzktLinkContract(contract){
-            if (this.$store.network === 'granadanet'){
-                return `https://granadanet.tzkt.io/${contract}`
+            if (this.$store.network === 'hangzhounet'){
+                return `https://hangzhou2net.tzkt.io/${contract}`
             } else if (this.$store.isSandbox) {
                 return `https://bcd.hover.engineering/sandboxnet/${contract}`
             } else {
@@ -195,8 +195,8 @@ export default {
             }
         },
         tzktLinkTx(opHash){
-            if (this.$store.network === 'granadanet'){
-                return `https://granadanet.tzkt.io/${opHash}`
+            if (this.$store.network === 'hangzhounet'){
+                return `https://hangzhou2net.tzkt.io/${opHash}`
             } else if (this.$store.isSandbox) {
                 return `https://bcd.hover.engineering/sandboxnet/opg/${opHash}`
             } else {
@@ -204,8 +204,8 @@ export default {
             }
         },
         bcdLink(contract){
-            if (this.$store.network === 'granadanet'){
-                return `https://better-call.dev/granadanet/${contract}`
+            if (this.$store.network === 'hangzhounet'){
+                return `https://better-call.dev/granahangzhou2netdanet/${contract}`
             } else if (this.$store.isSandbox) {
                 return `https://bcd.hover.engineering/sandboxnet/${contract}`
             } else {

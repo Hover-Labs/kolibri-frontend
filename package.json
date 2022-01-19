@@ -10,7 +10,7 @@
   "devDependencies": {
     "@dicebear/avatars": "4.2.5",
     "@dicebear/avatars-bottts-sprites": "4.2.5",
-    "@hover-labs/kolibri-js": "^3.0.2",
+    "@hover-labs/kolibri-js": "^3.2.0",
     "@sweetalert2/theme-bulma": "^4.0.1",
     "@taquito/local-forging": "^10.2.1",
     "@taquito/michelson-encoder": "^10.2.1",

@@ -30,8 +30,8 @@ let NETWORK, NODE_URL, NETWORK_CONTRACTS, isTestnet, farmContracts, isSandbox
 if ((
     // window.location.hostname === 'localhost' ||  window.location.hostname === '127.0.0.1' ||
     window.location.hostname === 'testnet.kolibri.finance') && !FORCE_MAINNET) {
-    NODE_URL = 'https://granadanet.api.tez.ie'
-    NETWORK = Network.Granada
+    NODE_URL = 'https://hangzhounet.api.tez.ie'
+    NETWORK = Network.Hangzhou
 
     NETWORK_CONTRACTS = CONTRACTS.TEST
 
@@ -66,7 +66,7 @@ if ((
     dontIndexTestnets()
 } else if (window.location.hostname === 'zeronet.kolibri.finance') {
     NODE_URL = 'https://rpczero.tzbeta.net'
-    NETWORK = Network.Granada
+    NETWORK = Network.Hangzhou
     NETWORK_CONTRACTS = CONTRACTS.ZERO
     isTestnet = true
     isSandbox = false
