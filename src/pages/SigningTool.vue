@@ -39,7 +39,8 @@
               <div class="field">
                 <label class="label">Signature</label>
                 <div class="control">
-                  <input :disabled="signatureResult === null" class="input" placeholder="Signature Will Appear Here" v-model="signatureResult" />
+                  <input v-if="signatureResult === null" :disabled="signatureResult === null" class="input" placeholder="Signature Will Appear Here" />
+                  <input v-else class="input" readonly placeholder="Signature Will Appear Here" v-model="signatureResult.signature" />
                 </div>
               </div>
               <div class="field is-grouped is-grouped-right">
@@ -58,10 +59,6 @@
 
 <script>
   import { TezosLanguageUtil } from 'conseiljs'
-  // import { addressDecoder } from "@taquito/local-forging/dist/lib/codec";
-  // import { Uint8ArrayConsumer } from "@taquito/local-forging";
-  // import { MichelsonMap } from "@taquito/michelson-encoder";
-  // import { Parser } from '@taquito/michel-codec'
 
   export default {
     name: "SigningTool",

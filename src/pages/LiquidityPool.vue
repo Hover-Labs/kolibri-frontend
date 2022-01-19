@@ -38,6 +38,19 @@
             </div>
           </div>
 
+          <div v-if="$store.lpDisabled">
+            <div class="notification is-warning warning-banner">
+              <div class="block">
+                <p>
+                  The liquidity pool is <b>currently disabled</b> and unable to act as a primary protocol liquidator. It was disabled in <a href="https://governance.kolibri.finance/proposals/12" target="_blank" rel="noopener"><b>DAO Proposal #12</b></a> in response to a security vulnerability.
+                  <br>
+                  <br>
+                  Liquidations through the pool won't work until the pool is reactivated via the DAO. Deposits and farming are still enabled. <a href="https://kolibri-xtz.medium.com/kolibri-liquidity-pool-exploit-postmortem-f738966c20fb" target="_blank" rel="noopener"><b>Learn More</b></a>
+                </p>
+              </div>
+            </div>
+          </div>
+
           <div v-if="$store.lpData !== null && poolBalance !== null">
             <nav class="level lp-stats">
               <div class="level-item has-text-centered">
@@ -185,7 +198,7 @@
                 </div>
               </div>
               <public-oven
-                v-else
+                v-else-if="!$store.lpDisabled"
                 :compact="true"
                 :oven="oven"
                 :key="oven.ovenAddress"
@@ -201,6 +214,11 @@
                   </button>
                 </template>
               </public-oven>
+              <div v-else>
+                <div class="has-text-centered loader-wrapper">
+                  <b>Liquidations via the pool are currently disabled.</b>
+                </div>
+              </div>
             </template>
           </div>
         </div>
@@ -470,6 +488,10 @@
     /* Firefox */
     input[type=number] {
       -moz-appearance: textfield;
+    }
+
+    .warning-banner{
+      border-radius: 0;
     }
 
   }

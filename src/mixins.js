@@ -1,6 +1,7 @@
 import _, { find } from 'lodash'
 import {ContractErrors} from '@hover-labs/kolibri-js'
 import axios from "axios";
+import moment from "moment";
 
 const errorMap = {
     Unknown: "An unknown error has occurred!",
@@ -203,6 +204,15 @@ export default {
                 return `https://tzkt.io/${opHash}`
             }
         },
+        tzktAPILink(){
+            if (this.$store.network === 'granadanet'){
+                return `https://api.granadanet.tzkt.io`
+            } else if (this.$store.isSandbox) {
+                return null
+            } else {
+                return `https://api.tzkt.io`
+            }
+        },
         bcdLink(contract){
             if (this.$store.network === 'hangzhounet'){
                 return `https://better-call.dev/granahangzhou2netdanet/${contract}`
@@ -238,9 +248,13 @@ export default {
             }
         },
         // BigNumber doesn't support toLocaleString properly, so wrap it here
-        formatNumber(num){
-            return parseFloat(num).toLocaleString()
-        }
+        formatNumber(num, places){
+            return parseFloat(num).toLocaleString(undefined, {minimumFractionDigits: places === undefined ? 2 : places, maximumFractionDigits: places === undefined ? 2 : places})
+        },
+        formatMoment(now, time){
+            const duration = now.diff(moment(time))
+            return moment.duration(duration).humanize()
+        },
     },
     computed: {
     }

@@ -50,7 +50,6 @@
         </router-link>
 
         <router-link
-          v-if="$store.network === 'sandboxnet'"
           :to="{name: 'SavingsRate'}"
           class="navbar-item"
         >

@@ -18,12 +18,54 @@
       </div>
       <div class="level-item has-text-centered">
         <div class="is-flex is-flex-direction-column is-align-items-center">
-          <p class="heading">Collateral Ratio</p>
+          <p class="heading">
+            Collateral Ratio
+            <popover>
+              <span slot="popup-content">
+                <span>
+                  The collateral ratio determines how much collateral you need to back your minted kUSD with.
+                  <br>
+                  A ratio of 200% means for every 1 kUSD you mint, you need at *least* $2 worth of XTZ.
+                  <span v-if="$store.lpDisabled">
+                    <br>
+                    <br>
+                    <b>The collateral ratio is temporarily {{ formattedCollateralRate() }}%</b> due to a <b><a href="https://kolibri-xtz.medium.com/kolibri-liquidity-pool-exploit-postmortem-f738966c20fb" rel="noopener" target="_blank">vulnerability in the Kolibri Liquidity Pool</a></b>.
+                  </span>
+                </span>
+              </span>
+              <span>(<a class="has-text-primary has-text-weight-bold">?</a>)</span>
+            </popover>
+          </p>
           <p v-if="$store.collateralRate === null" class="loader"></p>
-          <p v-else class="title">{{ formattedCollateralRate() }}%</p>
+          <p v-else :class="{'has-text-warning': $store.lpDisabled}"  class="title">{{ formattedCollateralRate() }}%</p>
         </div>
       </div>
     </nav>
+
+    <div class="peg-data is-flex is-flex-direction-column is-align-items-center">
+      <p class="heading">
+        kUSD Price / Peg Depth -
+        <span v-if="pegData !== null">
+          <strong>${{ pegData.currentkUSDPrice }}</strong> / <strong>{{ formatNumber(pegData.deltaForPeg.pegDepth.dividedBy(1e18), 2) }} kUSD</strong>
+        </span>
+        <strong v-else><span class="tiny-loader loader"></span></strong>
+        <popover>
+          <span slot="popup-content">
+            <span>
+              The kUSD <b>"peg"</b> is tracked against the <b><a target="_blank" rel="noopener" :href="harbingerLink()">Harbinger</a></b> price feed,
+              <br>
+              which is a <b><a target="_blank" rel="noopener" href="https://www.investopedia.com/terms/v/vwap.asp">VWAP</a></b> of <b><a href="https://pro.coinbase.com/trade/XTZ-USD" rel="noopener" target="_blank">Coinbase Pro</a></b> data for the XTZ/USD pair.
+            </span>
+            <br><br>
+            <span>
+              The <b><router-link target="_blank" :to="{ name: 'Docs', params: { folder: 'general', page: 'the-peg' } }">Peg Depth</router-link></b> is a measurement of the amount of <br> kUSD needed to be bought or sold to move the peg by <b>1%</b>.
+            </span>
+          </span>
+          <span>(<a class="has-text-primary has-text-weight-bold">?</a>)</span>
+        </popover>
+      </p>
+      <peg-visualizer @peg-stats="pegData = $event" />
+    </div>
 
     <div v-if="!showAll" class="seperator is-relative">
       <div class="more has-text-centered">
@@ -34,7 +76,7 @@
 
       <hr />
     </div>
-    <div class="animate__animated animate__fadeIn" v-else>
+    <div class="animate__animated animate__fadeIn bottom-stats" v-else>
       <nav class="level">
         <div class="level-item has-text-centered">
           <div class="is-flex is-flex-direction-column is-align-items-center">
@@ -206,6 +248,7 @@ import Popover from "@/components/Popover";
 import Mixins from "@/mixins";
 
 import axios from "axios";
+import PegVisualizer from "@/components/PegVisualizer";
 
 export default {
   name: "Stats",
@@ -221,6 +264,7 @@ export default {
     this.updateStatsData();
   },
   components: {
+    PegVisualizer,
     Popover,
   },
   data() {
@@ -228,6 +272,7 @@ export default {
       now: moment(),
       showAll: false,
       statsUpdateTimer: null,
+      pegData: null
     };
   },
   methods: {
@@ -289,7 +334,11 @@ export default {
       );
     },
     formattedCollateralRate() {
-      return this.$store.collateralRate / new BigNumber(Math.pow(10, 18));
+      if (this.$store.lpDisabled){
+        return (this.$store.collateralRate - this.$store.privateLiquidationThreshold) / new BigNumber(Math.pow(10, 18));
+      } else {
+        return this.$store.collateralRate / new BigNumber(Math.pow(10, 18));
+      }
     },
     humanTime(time) {
       return this.duration(time).humanize();
@@ -378,6 +427,29 @@ export default {
     .price-data {
       min-width: 4.625rem;
     }
+  }
+  .peg-data{
+    padding-bottom: 0.75rem;
+    .loader.tiny-loader{
+      display: inline-block;
+      height: 0.5rem;
+      width: 0.5rem;
+      margin: 0;
+    }
+    strong{
+      &.green{
+        color: $primary;
+      }
+      &.yellow{
+        color: $warning;
+      }
+      &.red{
+        color: $danger;
+      }
+    }
+  }
+  .bottom-stats{
+    margin-top: 1rem;
   }
 }
 </style>

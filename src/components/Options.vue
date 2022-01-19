@@ -216,23 +216,26 @@ export default {
       }
     }
 
+    const contracts = {
+      MINTER: 'Minter',
+      TOKEN: 'kUSD Token',
+      OVEN_PROXY: 'Oven Proxy',
+      OVEN_FACTORY: 'Oven Factory',
+      OVEN_REGISTRY: 'Oven Registry',
+      DEVELOPER_FUND: 'Developer Fund',
+      STABILITY_FUND: 'Stability Fund',
+      ORACLE: 'Oracle',
+      LIQUIDITY_POOL: 'Liquidity Pool',
+      SAVINGS_POOL: 'Kolibri Savings Rate',
+    }
+
     return {
-      contracts: {
-        MINTER: 'Minter',
-        TOKEN: 'kUSD Token',
-        OVEN_PROXY: 'Oven Proxy',
-        OVEN_FACTORY: 'Oven Factory',
-        OVEN_REGISTRY: 'Oven Registry',
-        DEVELOPER_FUND: 'Developer Fund',
-        STABILITY_FUND: 'Stability Fund',
-        ORACLE: 'Oracle',
-        LIQUIDITY_POOL: 'Liquidity Pool',
-      },
       popupOpen: false,
       selectedNode: this.$store.nodeURL,
       networkLoading: false,
       hasLoadedGTranslate: false,
       loadingGTranslate: false,
+      contracts,
       nodes
     }
   },

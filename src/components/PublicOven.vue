@@ -24,7 +24,7 @@
                     slot="popup-content"
                     class="has-text-primary is-marginless has-text-centered"
                   >
-                    You can only liquidate ovens as an individual that are above &lt;{{ $store.collateralRate.minus($store.privateLiquidationThreshold).dividedBy(Math.pow(10, 18)) }}% collateralized ({{ privateLiquidationThreshold }}%+ utilization).<br>You can read more about this change <a style="border-bottom: 1px solid #3EBD93;" target="_blank" rel="noopener" href="https://discuss.kolibri.finance/t/kip-006-prioritize-the-liquidation-pool-in-liquidations/58">here</a>
+                    You can only liquidate ovens as an individual that are &lt;{{ $store.collateralRate.minus($store.privateLiquidationThreshold).dividedBy(Math.pow(10, 18)) }}% collateralized ({{ privateLiquidationThreshold }}%+ utilization).<br>You can read more about this change <a style="border-bottom: 1px solid #3EBD93;" target="_blank" rel="noopener" href="https://discuss.kolibri.finance/t/kip-006-prioritize-the-liquidation-pool-in-liquidations/58">here</a>
                   </strong>
 
                   <!-- Note, using v-if in a default scoped slot breaks the underlying popper library :-/ -->
@@ -68,6 +68,7 @@
                 :disabled="pendingTransaction"
                 v-if="
                   $store.wallet !== null &&
+                  !$store.lpDisabled &&
                   !oven.isLiquidated &&
                   $store.collateralRate
                     .dividedBy(Math.pow(10, 18))

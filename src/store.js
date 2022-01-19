@@ -15,8 +15,8 @@ import { TezosToolkit } from "@taquito/taquito";
 import BigNumber from "bignumber.js";
 import _ from 'lodash'
 
-// const FORCE_MAINNET = true
-const FORCE_MAINNET = false
+const FORCE_MAINNET = true
+// const FORCE_MAINNET = false
 
 function dontIndexTestnets() {
     // If we're in testnet tell google not to index
@@ -137,6 +137,7 @@ let state = Vue.observable({
     lpTokenAddress: null,
     lpMantissa: new BigNumber(10).pow(36),
     daoStorage: null,
+    lpDisabled: true,
     ovenNames: ovenNames,
     network: NETWORK,
     nodeURL: NODE_URL,
