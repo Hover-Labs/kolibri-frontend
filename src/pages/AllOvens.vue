@@ -3,14 +3,12 @@
     <div
         v-if="$store.allOvensData !== null && $store.priceData !== null && activeVaults.length > 10"
         class="floating-paginator animate__animated animate__fadeInUp">
-      <Pagination
+      <Paginator
           class="is-centered"
-          :itemsTotal="activeVaults.length"
-          :itemsPerPage="1"
-          :currentPage="currentPage"
-          url="AllOvens"
-          :buttonsMax="5"
-          queryParameter="page"
+          :totalRecords="activeVaults.length"
+          :rows="10"
+          v-model="currentPage"
+          template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
       />
     </div>
     <div v-if="$store.allOvensData === null || $store.priceData === null" class="loading-wrapper">
@@ -69,8 +67,9 @@
 
 <script>
 import _ from 'lodash'
-import PublicOven from "@/components/PublicOven";
-import Pagination from 'vue-bulma-paginate/src/components/Pagination';
+import PublicOven from "@/components/PublicOven.vue";
+import { Pagination } from 'buefy';
+import Paginator from 'primevue/paginator';
 import Mixins from '../mixins';
 
 export default {
@@ -161,7 +160,7 @@ export default {
   },
   components: {
     PublicOven,
-    Pagination
+    Paginator,
   },
   methods: {
     markOvenLiquidated(ovenAddress){

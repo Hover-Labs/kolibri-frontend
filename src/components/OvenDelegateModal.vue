@@ -61,7 +61,8 @@
 
 <script>
 import Mixins from "@/mixins"
-import BakerInfo from "@/components/BakerInfo";
+import BakerInfo from "@/components/BakerInfo.vue";
+import emitter from "@/bus";
 
 export default {
   name: 'OvenDelegateModal',
@@ -106,7 +107,7 @@ export default {
       try{
         this.networkLoading = true
         let setBakerResult = await this.ovenClient(this.ovenAddress).setBaker(this.bakerAddress)
-        this.$eventBus.$emit("oven-tx-submitted", setBakerResult, this.ovenAddress, 'set baker')
+        emitter.emit("oven-tx-submitted", setBakerResult, this.ovenAddress, 'set baker')
         this.close()
       } catch (e) {
         this.handleWalletError(e, "Could not set baker", "There was an issue with the set baker request.")

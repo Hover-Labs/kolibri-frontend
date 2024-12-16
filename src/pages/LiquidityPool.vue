@@ -178,7 +178,7 @@
             <h2 class="has-text-centered">Connect your wallet</h2>
             <p class="has-text-centered">Please connect your wallet to get started!</p>
             <div class="buttons is-centered">
-              <button @click="$eventBus.$emit('wallet-connect-request')" class="button is-primary has-text-weight-bold">Connect Wallet</button>
+              <button @click="emitter.emit('wallet-connect-request')" class="button is-primary has-text-weight-bold">Connect Wallet</button>
             </div>
           </div>
 
@@ -231,7 +231,8 @@
   import Mixins from "@/mixins";
   import BigNumber from "bignumber.js";
   import _ from "lodash";
-  import PublicOven from "@/components/PublicOven";
+  import PublicOven from "@/components/PublicOven.vue";
+  import emitter from "@/bus";
 
   BigNumber.set({ DECIMAL_PLACES: 36 })
 
@@ -247,6 +248,7 @@
         poolBalance: null,
         txPending: false,
         currentPage: 0,
+        emitter,
       }
     },
     async mounted(){
@@ -312,13 +314,13 @@
             .withContractCall(lpContract.methods.deposit(sendAmt))
             .send()
 
-          this.$eventBus.$emit('tx-submitted', sendResult)
+          emitter.emit('tx-submitted', sendResult)
 
           this.$log(sendResult)
 
           await sendResult.confirmation(1)
 
-          this.$eventBus.$emit('refresh-holdings')
+          emitter.emit('refresh-holdings')
 
           this.poolBalance = null
           await this.updatePoolBalance()
@@ -326,7 +328,7 @@
           this.handleWalletError(e, 'Unable To Deposit Liquidity', 'We were unable to deposit kUSD into the LP.')
         } finally {
           this.txPending = false
-          this.$eventBus.$emit('tx-finished')
+          emitter.emit('tx-finished')
           this.depositInput = null
         }
       },
@@ -348,7 +350,7 @@
 
           this.redeemInput = ''
 
-          this.$eventBus.$emit('refresh-holdings')
+          emitter.emit('refresh-holdings')
 
           this.poolBalance = null
           await this.updatePoolBalance()

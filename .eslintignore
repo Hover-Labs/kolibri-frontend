@@ -1,0 +1,8 @@
+
+# Do not lint generated files.
+build
+
+# Do not lint node_modules
+node_modules
+src
+workers-site

@@ -132,6 +132,7 @@
 <script>
 import Mixins from "@/mixins";
 import BigNumber from "bignumber.js";
+import emitter from "@/bus";
 
 export default {
   name: "Borrow",
@@ -157,7 +158,7 @@ export default {
         let borrowResult = await this.ovenClient(this.ovenAddress).borrow(
           borrowAmt.toFixed()
         );
-        this.$eventBus.$emit(
+        emitter.emit(
           "oven-tx-submitted",
           borrowResult,
           this.ovenAddress,

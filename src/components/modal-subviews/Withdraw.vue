@@ -111,7 +111,8 @@
 <script>
 import Mixins from "@/mixins";
 import BigNumber from "bignumber.js";
-import Popover from "@/components/Popover";
+import Popover from "@/components/Popover.vue";
+import emitter from "@/bus";
 
 export default {
   name: "Withdraw",
@@ -138,7 +139,7 @@ export default {
             .multipliedBy(Math.pow(10, 6))
             .toFixed()
         );
-        this.$eventBus.$emit(
+        emitter.emit(
           "oven-tx-submitted",
           withdrawResult,
           this.ovenAddress,

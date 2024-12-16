@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar animate__animated animate__fadeIn">
+  <nav class="navbar animate__animated animate__fadeIn is-primary">
     <wallet-manager />
     <div class="navbar-brand">
       <router-link
@@ -10,7 +10,7 @@
         <img src="../assets/kolibri-brand.png">
       </router-link>
 
-      <a @click="menuOpen=!menuOpen" role="button" v-on:clickout="menuOpen=false" class="navbar-burger" :class="{'is-active': menuOpen}">
+      <a @click="menuOpen=!menuOpen" role="button" v-on:clickout="menuOpen=false" class="navbar-burger is-primary" :class="{'is-active': menuOpen}">
         <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>
@@ -83,7 +83,7 @@
         <div class="navbar-item wallet-connector">
           <div v-if="$store.wallet === null || $store.wallet.connected === false" class="buttons">
             <button
-              @click="$eventBus.$emit('wallet-connect-request')"
+              @click="emitEvent('wallet-connect-request')"
               class="button connect-button is-primary is-small"
             >
               <strong>Connect Wallet</strong>
@@ -93,7 +93,7 @@
             <div class="avatar"><div class="image is-48x48" v-html="avatarSvg()"></div></div>
             <div class="wallet-info">
               <p class="has-text-weight-bold has-text-right">
-                <a @click="$eventBus.$emit('wallet-reconnect-request')">
+                <a @click="emitEvent('wallet-reconnect-request')">
                   {{ truncateChars(this.$store.walletPKH, 18) }}
                 </a>
               </p>
@@ -108,8 +108,9 @@
 
 <script>
 import Mixins from '@/mixins'
-import WalletManager from "@/components/WalletManager";
+import WalletManager from "@/components/WalletManager.vue";
 import {WalletStates} from "@/enums";
+import emitter from "@/bus";
 
 import Avatars from '@dicebear/avatars';
 import sprites from '@dicebear/avatars-bottts-sprites';
@@ -135,6 +136,9 @@ export default {
         height: 48,
         margin: 4,
       })
+    },
+    emitEvent(event) {
+      emitter.emit(event);
     }
   },
   components: {

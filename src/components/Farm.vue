@@ -3,18 +3,18 @@
       enter-active-class="animate__animated animate__fadeIn fast"
       leave-active-class="animate__animated animate__fadeOut fast"
   >
-    <div class="box farm">
+    <div class="box farm mb-5">
 
       <div v-if="farmContractData !== null">
         <nav class="level is-marginless">
           <div class="level-left">
             <div class="level-item">
 
+              <h1 class="title">
+                  <a class="has-text-white">{{ pairName }} Farm <template v-if="['kUSD', 'QLkUSD', 'kUSD/uUSD Flat Curve LP', 'kUSD/XTZ Quipuswap LP'].includes(pairName)">(inactive)</template> </a>
+              </h1>
               <popover>
                 <p slot="popup-content" v-html="decimalsMap[pairName].description"></p>
-                <h1 class="title">
-                  <a class="has-text-white">{{ pairName }} Farm <template v-if="['kUSD', 'QLkUSD', 'kUSD/uUSD Flat Curve LP', 'kUSD/XTZ Quipuswap LP'].includes(pairName)">(inactive)</template> </a>
-                </h1>
               </popover>
 
               <a target="_blank" rel="noopener"
@@ -283,8 +283,9 @@
 <script>
 import Mixins from "@/mixins";
 import BigNumber from "bignumber.js";
-import Popover from "@/components/Popover";
+import Popover from "@/components/Popover.vue";
 import {Network} from "@hover-labs/kolibri-js";
+import emitter from "@/bus";
 
 BigNumber.set({ DECIMAL_PLACES: 36 })
 
@@ -296,7 +297,7 @@ export default {
     this.$nextTick(this.initialize)
 
     // Refresh farms on request
-    this.$eventBus.$on('refresh-farms', () => {
+    emitter.on('refresh-farms', () => {
       this.$log("Refreshing farms!")
       Object.assign(this.$data, this.$options.data.apply(this))
       this.$log("Done refreshing farms")
@@ -315,7 +316,7 @@ export default {
       if (this.$store.walletPKH !== null){
         await this.updateTokenBalance()
       } else {
-        this.$eventBus.$on('wallet-connected', this.updateTokenBalance)
+        emitter.on('wallet-connected', this.updateTokenBalance)
       }
 
       this.$emit('initialized', {contractAddress: this.contract, contract: farmContract, claimable: this.estimatedRewards})
@@ -346,19 +347,19 @@ export default {
 
         const sendResult = await farmContract.methods.claim(null).send()
 
-        this.$eventBus.$emit('tx-submitted', sendResult)
+        emitter.emit('tx-submitted', sendResult)
 
         await sendResult.confirmation(1)
 
         this.holdingsData = null
 
-        this.$eventBus.$emit('refresh-kdao-holdings')
+        emitter.emit('refresh-kdao-holdings')
         await this.initialize()
       } catch (e) {
         console.error(e)
       } finally {
         this.networkSending = false
-        this.$eventBus.$emit('tx-finished')
+        emitter.emit('tx-finished')
       }
     },
     async withdrawLiquidity(){
@@ -368,7 +369,7 @@ export default {
 
         const sendResult = await farmContract.methods.escape().send()
 
-        this.$eventBus.$emit('tx-submitted', sendResult)
+        emitter.emit('tx-submitted', sendResult)
 
         await sendResult.confirmation(1)
 
@@ -378,7 +379,7 @@ export default {
         console.error(e)
       } finally {
         this.networkSending = false
-        this.$eventBus.$emit('tx-finished')
+        emitter.emit('tx-finished')
       }
     },
     async depositTokens(){
@@ -393,7 +394,7 @@ export default {
           .withContractCall(farmContract.methods.deposit(sendAmt))
           .send()
 
-        this.$eventBus.$emit('tx-submitted', sendResult)
+        emitter.emit('tx-submitted', sendResult)
 
         await sendResult.confirmation(1)
 
@@ -403,7 +404,7 @@ export default {
         console.error(e)
       } finally {
         this.networkSending = false
-        this.$eventBus.$emit('tx-finished')
+        emitter.emit('tx-finished')
         this.depositInput = null
       }
     },
@@ -415,7 +416,7 @@ export default {
 
         const sendResult = await farmContract.methods.withdraw(sendAmt).send()
 
-        this.$eventBus.$emit('tx-submitted', sendResult)
+        emitter.emit('tx-submitted', sendResult)
 
         await sendResult.confirmation(1)
 
@@ -425,7 +426,7 @@ export default {
         console.error(e)
       } finally {
         this.networkSending = false
-        this.$eventBus.$emit('tx-finished')
+        emitter.emit('tx-finished')
         this.withdrawInput = null
       }
     }

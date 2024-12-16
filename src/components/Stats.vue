@@ -239,11 +239,11 @@ import BigNumber from "bignumber.js";
 BigNumber.config({ POW_PRECISION: 18 })
 
 import { ConversionUtils } from '@hover-labs/kolibri-js'
-import Popover from "@/components/Popover";
+import Popover from "@/components/Popover.vue";
 import Mixins from "@/mixins";
 
 import axios from "axios";
-import PegVisualizer from "@/components/PegVisualizer";
+import PegVisualizer from "@/components/PegVisualizer.vue";
 
 export default {
   name: "Stats",

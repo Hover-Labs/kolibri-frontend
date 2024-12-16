@@ -1,10 +1,10 @@
 <template>
-  <div class="box oven public-oven">
+  <div class="box oven public-oven mb-5">
     <div class="top">
       <nav class="level is-mobile">
         <div class="level-left">
           <div class="level-item">
-            <h1 class="title is-5 is-family-monospace">
+            <h1 class="title is-5 is-family-monospace is-primary">
               <a
                 target="_blank"
                 rel="noopener"
@@ -265,7 +265,7 @@
 
 <script>
 import Mixins from "@/mixins";
-import Popover from "@/components/Popover";
+import Popover from "@/components/Popover.vue";
 
 export default {
   name: "PublicOven",

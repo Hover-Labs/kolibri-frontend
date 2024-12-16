@@ -1,5 +1,5 @@
 <template>
-  <div class="box oven">
+  <div class="box oven mb-5">
     <div class="top">
       <nav class="level is-mobile">
         <!-- Left side -->
@@ -356,10 +356,11 @@
 </template>
 
 <script>
+import { reactive } from 'vue';
 import _ from "lodash";
 import Mixins from "@/mixins";
-import Popover from "@/components/Popover";
-// import BigNumber from "bignumber.js";
+import Popover from "@/components/Popover.vue";
+import emitter from "@/bus";
 
 export default {
   name: "Oven",
@@ -375,7 +376,7 @@ export default {
       await this.updateOvenData()
     }, 60 * 1000)
 
-    this.$eventBus.$on("oven-tx-submitted", (txResult, ovenAddress, verb) => {
+    emitter.on("oven-tx-submitted", (txResult, ovenAddress, verb) => {
       if (this.ovenAddress === ovenAddress) {
         this.waitForTxAndRefresh(txResult, verb);
       }
@@ -442,11 +443,7 @@ export default {
       // Just calculate this ourselves and save a few requests
       ovenData.outstandingTokens = ovenData.borrowedTokens.plus(ovenData.stabilityFee)
 
-      this.$set(
-        this.$store.ownedOvens,
-        this.ovenAddress,
-        ovenData
-      );
+      this.$store.ownedOvens[this.ovenAddress] = ovenData;
     },
     async waitForTxAndRefresh(txResult, verb) {
       try {
@@ -457,7 +454,7 @@ export default {
         this.$log("Deposit Finished! Refreshing data", txResult);
         await this.updateOvenData();
 
-        this.$set(this.$store, 'walletBalance', await this.$store.tokenClient.getBalance(this.$store.walletPKH))
+        this.$store.walletBalance = await this.$store.tokenClient.getBalance(this.$store.walletPKH);
 
         this.updatingData = false;
       } catch (err) {

@@ -18,7 +18,8 @@
               <br>
               <p class="help">Please note: This is a <b>*spot price*</b>, not an average price.</p>
             </div>
-            <div
+          </popover>
+          <div
               class="peg-progress"
               :class="[pegProgressClass, {full: Math.abs(currentPegPercent) * 10 >= 100}]"
               :style="{width: `${Math.min(Math.abs(currentPegPercent) * 10, 100)}%`}"
@@ -27,7 +28,6 @@
                 <p class="heading">{{ currentPegPercent.toFixed(1) }}%</p>
               </div>
             </div>
-          </popover>
         </div>
         <div :style="{opacity: currentPegPercent.isGreaterThan(0) ? 1 : 0}" class="positive-peg">
           <popover>
@@ -38,6 +38,7 @@
               <br>
               <p class="help">Please note: This is a <b>*spot price*</b>, not an average price.</p>
             </div>
+          </popover>
             <div
               class="peg-progress"
               :class="[pegProgressClass, {full: Math.abs(currentPegPercent) * 10 >= 100}]"
@@ -47,7 +48,7 @@
                 <p class="heading">{{ currentPegPercent.toFixed(1) }}%</p>
               </div>
             </div>
-          </popover>
+
         </div>
       </div>
     </div>
@@ -58,7 +59,7 @@
 import BigNumber from "bignumber.js";
 BigNumber.config({ POW_PRECISION: 18 })
 
-import Popover from "@/components/Popover";
+import Popover from "@/components/Popover.vue";
 import Mixins from "@/mixins";
 
 export default {

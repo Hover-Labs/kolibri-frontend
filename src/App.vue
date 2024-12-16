@@ -11,25 +11,27 @@
 
     <sandbox-override v-if="$store.isSandbox"/>
     <navbar />
-    <keep-alive>
-      <router-view :key="$route.name"></router-view>
-    </keep-alive>
+    <router-view v-slot="{ Component }">
+      <keep-alive>
+        <component :is="Component" />
+      </keep-alive>
+    </router-view>
     <hover-labs-footer />
   </div>
 </template>
 
 <script>
-import Navbar from "@/components/Navbar";
+import Navbar from "@/components/Navbar.vue";
 import axios from "axios";
 import BigNumber from "bignumber.js";
-import SandboxOverride from "@/components/SandboxOverrides";
-import Options from "@/components/Options";
-import PendingTxInfo from "@/components/PendingTransactionInfo";
+import SandboxOverride from "@/components/SandboxOverrides.vue";
+import Options from "@/components/Options.vue";
+import PendingTxInfo from "@/components/PendingTransactionInfo.vue";
 import _ from 'lodash'
 import {Network} from "@hover-labs/kolibri-js";
 
 import Mixins from './mixins'
-import HoverLabsFooter from "@/components/HoverLabsFooter";
+import HoverLabsFooter from "@/components/HoverLabsFooter.vue";
 import {z} from 'zod'
 
 export default {
@@ -176,17 +178,43 @@ export default {
 </script>
 
 <style type="text/scss" lang="scss">
-  @import './assets/sass/globals';
   @import '~bulma/bulma';
+  @import './assets/sass/globals';
   @import '~animate.css/animate.css';
-  @import '~vue-popperjs/dist/vue-popper.css';
+  // @import '~vue-popperjs/dist/vue-popper.css';
   @import '~@sweetalert2/theme-bulma/bulma.scss';
   @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;700&display=fallback');
+
+  :root {
+  }
 
   // For our modal
   html.disable-scroll {
     overflow: hidden;
   }
+
+  [data-theme=light],
+    .theme-light {
+      /* CSS Variables */
+      --bulma-body-family: 'Open Sans', sans-serif;
+      --bulma-primary-h: 160;
+      --bulma-primary-s: 51%;
+      --bulma-primary-l: 49%;
+      --bulma-primary: hsla(var(--bulma-primary-h), var(--bulma-primary-s), var(--bulma-primary-l), 1);
+      --bulma-link-text: hsla(160, 51%, 49%, 1);
+      --bulma-navbar-burger-color: var(--bulma-primary);
+
+      .heading {
+        display: block;
+        font-size: 11px;
+        letter-spacing: 1px;
+        margin-bottom: 5px;
+        text-transform: uppercase;
+      }
+      .title, .subtitle {
+        color: #486581;
+      }
+}
 
   .popper{
     box-shadow: 0 0.5em 1em -0.125em rgba(10, 10, 10, 0.1), 0 0px 0 1px rgba(10, 10, 10, 0.02);

@@ -84,10 +84,10 @@
 
 <script>
 import Mixins from "@/mixins";
-import Stats from "@/components/Stats";
-import Ovens from "@/components/Ovens";
-import ConnectPrompt from "@/components/ConnectPrompt";
-import GovProposalNotification from "@/components/GovProposalNotification";
+import Stats from "@/components/Stats.vue";
+import Ovens from "@/components/Ovens.vue";
+import ConnectPrompt from "@/components/ConnectPrompt.vue";
+import GovProposalNotification from "@/components/GovProposalNotification.vue";
 
 export default {
   name: 'Index',

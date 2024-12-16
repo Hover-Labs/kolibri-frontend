@@ -4,16 +4,17 @@
 import { WalletStates } from "@/enums";
 import { BeaconWallet } from "@taquito/beacon-wallet";
 import BigNumber from "bignumber.js";
-import {Network} from "@hover-labs/kolibri-js";
+import { Network } from "@hover-labs/kolibri-js";
 import _ from "lodash";
+import emitter from "@/bus";
 
 BigNumber.set({ DECIMAL_PLACES: 36 })
 
 export default {
   name: 'WalletManager',
   async mounted(){
-    this.$eventBus.$on('wallet-connect-request', this.connectWallet)
-    this.$eventBus.$on('wallet-reconnect-request', this.reconnectWallet)
+    emitter.on('wallet-connect-request', this.connectWallet)
+    emitter.on('wallet-reconnect-request', this.reconnectWallet)
 
     this.beaconWallet = new BeaconWallet({
       name: "Kolibri",
@@ -24,10 +25,10 @@ export default {
     // Go check for an active account, and if it exists just use that
     const activeAccount = await this.beaconWallet.client.getActiveAccount()
     if (activeAccount !== undefined){
-      this.$eventBus.$emit('wallet-connect-request', activeAccount)
+      emitter.emit('wallet-connect-request', activeAccount)
     }
 
-    this.$eventBus.$on('refresh-holdings', async () => {
+    emitter.on('refresh-holdings', async () => {
       this.$store.lpData = null
       this.$store.lpBalance = null
       this.$store.walletBalance = null
@@ -71,7 +72,7 @@ export default {
         this.$store.walletBalance = null
         this.$store.walletState = WalletStates.DISCONNECTED
 
-        this.$eventBus.$emit('refresh-farms')
+        emitter.emit('refresh-farms')
 
         await this.connectWallet()
       } catch (e) {
@@ -95,8 +96,8 @@ export default {
         this.$store.walletState = WalletStates.CONNECTED;
         this.$store.wallet = this.beaconWallet
 
-        this.$eventBus.$emit('wallet-connected')
-        this.$eventBus.$emit('refresh-all-ovens')
+        emitter.emit('wallet-connected')
+        emitter.emit('refresh-all-ovens')
         // Update wallet balances for kUSD
         await this.updateBalance()
         this.updateTimer = setInterval(this.updateBalance, 60 * 1000)

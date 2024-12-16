@@ -13,13 +13,15 @@
         <div class="columns is-marginless">
           <div class="column is-3 sidebar" :class="{'is-active': menuOpen}">
             <aside class="menu">
-              <template v-for="[pageFolder, pages] in sortFolders(allPages)">
-                <p :key="pageFolder" class="menu-label">
+              <template v-for="[pageFolder, pages] in sortFolders(allPages)" :key="pageFolder">
+                <p class="menu-label">
                   {{ titleCase(pageFolder) }}
                 </p>
-                <ul :key="JSON.stringify(pages)" class="menu-list">
+                <ul class="menu-list">
                   <li :key="url" v-for="[page, url] in sortPages(pages)">
-                    <router-link :to="{ name: 'Docs', params: { folder: pageFolder, page: page } }">{{ titleCase(page.replaceAll('-', ' ')) }}</router-link>
+                    <router-link :to="{ name: 'Docs', params: { folder: pageFolder, page: page } }">
+                      {{ titleCase(page.replaceAll('-', ' ')) }}
+                    </router-link>
                   </li>
                 </ul>
               </template>
@@ -41,16 +43,19 @@
 import marked from 'marked'
 import _ from 'lodash'
 
-const allDocs = (ctx => {
-  let keys = ctx.keys();
-  let values = keys.map(ctx);
-  return keys.reduce((o, k, i) => { o[k] = values[i]; return o; }, {});
-})(require.context('../../kolibri-docs/', true, /.md$/));
+const getDocs = import.meta.glob('./../../kolibri-docs/**/*.md', { as: 'raw', eager: true });
+
+const allDocs = Object.keys(getDocs).reduce((acc, key) => {
+  // Remove the leading './../../kolibri-docs/' part
+  const newKey = key.replace('./../../kolibri-docs/', './');
+  acc[newKey] = getDocs[key];
+  return acc;
+}, {});
 
 export default {
   name: 'Docs',
   async mounted(){
-    this.syncPage()
+    await this.syncPage();
   },
   components: {
   },
@@ -73,7 +78,7 @@ export default {
           }, 'desc')
           .value()
     },
-    syncPage(){
+    async syncPage(){
       if (
           // If we have a requested page that doesn't exist, redirect them to the intro
           (this.$route.name === 'Docs' || this.$route.name === 'DocsRoot') &&
@@ -86,12 +91,12 @@ export default {
       ){
         this.resetPage()
       } else {
-        const url = this.allPages[this.$route.params.folder][this.$route.params.page]
-        fetch(url)
-          .then(async (result) => {
-            let response = await result.text()
-            this.pageContent = marked(response)
-          })
+        const markdown = this.allPages[this.$route.params.folder][this.$route.params.page]
+        try {
+          this.pageContent = marked(markdown)
+        } catch (error) {
+          console.error('Error loading markdown:', error);
+        }        
       }
     },
     resetPage(){

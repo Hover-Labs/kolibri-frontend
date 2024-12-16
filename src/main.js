@@ -1,34 +1,33 @@
-import Vue from 'vue'
+import { createApp } from 'vue'
 import App from './App.vue'
 import store from './store'
 import router from './router'
+import clickoutEvent from 'clickout-event'
 
-require('clickout-event')
+const app = createApp(App)
 
-Vue.config.productionTip = false
-
-Vue.prototype.$store = store
-Vue.prototype.$eventBus = new Vue();
+app.config.globalProperties.$store = store
+// app.config.globalProperties.$eventBus = app
 
 // Enable/disable logging
-// Vue.prototype.$log = message => console.log(message)
-Vue.prototype.$log = () => {}
+// app.config.globalProperties.$log = message => console.log(message)
+app.config.globalProperties.$log = () => {}
 
-Vue.directive('focus', {
-  inserted: function (el) {
-      el.focus()
+app.directive('focus', {
+  mounted(el) {
+    el.focus()
   }
 })
 
 window.ctx = store
 
 import VueSweetalert2 from 'vue-sweetalert2';
-Vue.use(VueSweetalert2);
+app.use(VueSweetalert2);
 
 import PortalVue from 'portal-vue'
-Vue.use(PortalVue)
+app.use(PortalVue)
 
-window.app = new Vue({
-  render: h => h(App),
-  router
-}).$mount('#app')
+import PrimeVue from 'primevue/config';
+app.use(PrimeVue, { /* options */ });
+
+app.use(router).mount('#app')
