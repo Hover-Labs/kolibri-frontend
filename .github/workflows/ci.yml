@@ -1,5 +1,8 @@
 name: Build
 
+env:
+  NODE_OPTIONS: --openssl-legacy-provider
+
 on:
   push:
     branches: [ master ]
@@ -27,9 +30,9 @@ jobs:
     - uses: actions/checkout@v2
       with:
         submodules: 'recursive'
-    - uses: actions/setup-node@v2
-      with:
-        node-version: '14.17.6'
+    - uses: actions/setup-node@v4
+      # with:
+      #   node-version: '16.13.0'
 
     - name: Retrieve the cached "node_modules" directory (if present)
       uses: actions/cache@v2
@@ -45,7 +48,7 @@ jobs:
     - name: "Build & Deploy Frontend"
       run: npm run build
 
-    - uses: cloudflare/wrangler-action@1.2.0
+    - uses: cloudflare/wrangler-action@v3
       name: "Deploy testnet.kolibri.finance"
       if: github.ref == 'refs/heads/master' # Only deploy on merge to master
       env:
@@ -54,7 +57,7 @@ jobs:
         apiToken: ${{ secrets.CF_API_TOKEN }}
         environment: 'testnet'
 
-    - uses: cloudflare/wrangler-action@1.2.0
+    - uses: cloudflare/wrangler-action@v3
       name: "Deploy sandbox.kolibri.finance"
       if: github.ref == 'refs/heads/master' # Only deploy on merge to master
       env:
@@ -63,7 +66,7 @@ jobs:
         apiToken: ${{ secrets.CF_API_TOKEN }}
         environment: 'sandbox'
 
-    - uses: cloudflare/wrangler-action@1.2.0
+    - uses: cloudflare/wrangler-action@v3
       name: "Deploy zeronet.kolibri.finance"
       if: github.ref == 'refs/heads/master' # Only deploy on merge to master
       env:
@@ -72,7 +75,7 @@ jobs:
         apiToken: ${{ secrets.CF_API_TOKEN }}
         environment: 'zeronet'
 
-    - uses: cloudflare/wrangler-action@1.2.0
+    - uses: cloudflare/wrangler-action@v3
       name: "Deploy kolibri.finance"
       if: github.ref == 'refs/heads/master' # Only deploy on merge to master
       env:
@@ -125,8 +128,8 @@ jobs:
     - name: Discord notification PR
       env:
         DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-      uses: Ilshidur/action-discord@master
-      with:
-        args: >
-          <:kolibri:790471932025372693> [[{{ SHORT_SHA }}](https://github.com/{{ GITHUB_REPOSITORY }}/commit/{{ SHORT_SHA }})] [Kolibri Frontend built successfully!](https://github.com/{{ GITHUB_REPOSITORY }}/actions/runs/{{ GITHUB_RUN_ID }}?check_suite_focus=true)
-          ```${{ github.event.head_commit.message }}```
+  #     uses: Ilshidur/action-discord@master
+  #     with:
+  #       args: >
+  #         <:kolibri:790471932025372693> [[{{ SHORT_SHA }}](https://github.com/{{ GITHUB_REPOSITORY }}/commit/{{ SHORT_SHA }})] [Kolibri Frontend built successfully!](https://github.com/{{ GITHUB_REPOSITORY }}/actions/runs/{{ GITHUB_RUN_ID }}?check_suite_focus=true)
+  #         ```${{ github.event.head_commit.message }}```

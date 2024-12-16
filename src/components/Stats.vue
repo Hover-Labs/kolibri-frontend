@@ -183,7 +183,7 @@
       <h1 class="subtitle is-marginless has-text-weight-normal">
         Latest
         <a :href="harbingerLink()" target="_blank" rel="noopener">
-          XTZ/USD Oracle
+          XTZ/USDT Oracle
         </a>
         Price:
       </h1>

@@ -32,6 +32,7 @@ import {Network} from "@hover-labs/kolibri-js";
 
 import Mixins from './mixins'
 import HoverLabsFooter from "@/components/HoverLabsFooter.vue";
+import {z} from 'zod'
 
 export default {
   name: 'App',
@@ -155,11 +156,17 @@ export default {
         }, 0).dividedBy(Math.pow(10, 18))
       }
     },
-    updatePriceInfo(){
-      this.$store.harbingerClient.getPriceData()
-          .then((priceData) => {
-            this.$store.priceData = priceData;
-          })
+    async updatePriceInfo(){
+      // Youves contract: KT1ExbCyFbsvPQTUitHAK7HSfYkJgiCtBGpM - key USDT
+      const baseUrl = 'https://rpc.tzbeta.net/chains/main/blocks/head/context/big_maps/597699/exprtbVCZ3qh45pH3wZpx1TN2pAJ94pss44kpbHodsxuQ8E7ntVw4M'
+      const response = await axios.get(baseUrl);
+      const responseSchema = z.object({
+        prim: z.literal('Pair'),
+        args: z.array(z.object({ int: z.coerce.number() }))
+      })
+      const parsedResponse = responseSchema.parse(response.data);
+      const [price, timestamp] = parsedResponse.args.map((arg) => arg.int)
+      this.$store.priceData = { timestamp, price: new BigNumber(price)};
     },
     async updateBlockHeight(){
       const currentBlock = await this.$store.tezosToolkit.rpc.getBlock()
