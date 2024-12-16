@@ -1,18 +1,17 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
+import { createRouter, createWebHistory, createWebHashHistory } from 'vue-router';
 
-Vue.use(VueRouter)
+//  Vue.use(VueRouter)
 
-import Index from '@/pages/Index'
-import Docs from "@/pages/Docs";
-import AllOvens from "@/pages/AllOvens";
-import NotFound from "@/pages/NotFound";
-import TOS from "@/pages/TOS";
-import PrivacyPolicy from "@/pages/PrivacyPolicy";
-import SigningTool from "@/pages/SigningTool";
-import LiquidityPool from "@/pages/LiquidityPool";
-import Farming from "@/pages/Farming";
-import SavingsRate from "@/pages/SavingsRate";
+import Index from '@/pages/Index.vue';
+import Docs from "@/pages/Docs.vue";
+import AllOvens from "@/pages/AllOvens.vue";
+import NotFound from "@/pages/NotFound.vue";
+import TOS from "@/pages/TOS.vue";
+import PrivacyPolicy from "@/pages/PrivacyPolicy.vue";
+import SigningTool from "@/pages/SigningTool.vue";
+import LiquidityPool from "@/pages/LiquidityPool.vue";
+import Farming from "@/pages/Farming.vue";
+import SavingsRate from "@/pages/SavingsRate.vue";
 
 const routes = [
     {
@@ -36,7 +35,7 @@ const routes = [
         component: Docs,
     },
     {
-        path: '/docs/:folder/:page',
+        path: '/docs/:folder?/:page?',
         name: 'Docs',
         component: Docs,
     },
@@ -75,15 +74,25 @@ const routes = [
         name: 'Farming',
         component: Farming
     },
-    { path: "*", component: NotFound }
+    {
+        path: '/:catchAll(.*)',
+        name: 'NotFound',
+        component: NotFound
+    }
 ]
 
 const isIPFS = window.location.host.indexOf('k51qzi5uqu5dlgtiu5vs75r2cfim0qn9rezu804nrw6x38h85kh8q8c4ake3vn') !== -1 ||
                window.location.host === 'kusd.tez.page'
 const isFileProtocol = window.location.protocol === 'file:'
 
-export default new VueRouter({
-    mode: (isIPFS || isFileProtocol) ? 'hash' : 'history',
+const router = createRouter({
+    history: (isIPFS || isFileProtocol) ? createWebHashHistory() : createWebHistory(),
     linkActiveClass: 'is-active',
     routes
 })
+
+// const app = createApp({})
+// app.use(router)
+// app.mount('#app')
+
+export default router;

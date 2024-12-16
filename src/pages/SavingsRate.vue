@@ -198,7 +198,7 @@
             <h2 class="has-text-centered">Connect your wallet</h2>
             <p class="has-text-centered">Please connect your wallet to get started!</p>
             <div class="buttons is-centered">
-              <button @click="$eventBus.$emit('wallet-connect-request')" class="button is-primary has-text-weight-bold">Connect Wallet</button>
+              <button @click="emitter.emit('wallet-connect-request')" class="button is-primary has-text-weight-bold">Connect Wallet</button>
             </div>
           </div>
         </div>
@@ -212,8 +212,9 @@
   import BigNumber from "bignumber.js"
   import moment from 'moment'
   import axios from "axios";
-  import RecentActivityEntry from "@/components/RecentActivityEntry";
-
+  import RecentActivityEntry from "@/components/RecentActivityEntry.vue";
+  import emitter from "@/bus";
+  
   BigNumber.set({ DECIMAL_PLACES: 36 })
 
   export default {
@@ -239,6 +240,7 @@
         learnMoreModalOpen: false,
 
         balancesUpdated: false,
+        emitter,
       }
     },
     async mounted(){
@@ -259,7 +261,7 @@
       }, 1000)
 
       if (this.$store.walletPKH === null){
-        this.$eventBus.$on('wallet-connected', this.updateTotals)
+        emitter.on('wallet-connected', this.updateTotals)
       }
 
       setInterval(async () => {
@@ -327,19 +329,19 @@
             .withContractCall(await this.spClient.makeDepositTransaction(sendAmt, this.savingsRateContract))
             .send()
 
-          this.$eventBus.$emit('tx-submitted', sendResult)
+          emitter.emit('tx-submitted', sendResult)
 
           this.$log(sendResult)
 
           await sendResult.confirmation(1)
 
-          this.$eventBus.$emit('refresh-holdings')
+          emitter.emit('refresh-holdings')
           await this.updateTotals()
         } catch(e){
           this.handleWalletError(e, 'Unable To Deposit Liquidity', 'We were unable to deposit kUSD into the LP.')
         } finally {
           this.txPending = false
-          this.$eventBus.$emit('tx-finished')
+          emitter.emit('tx-finished')
           this.depositInput = null
         }
       },
@@ -351,19 +353,19 @@
 
           const sendResult = await this.spClient.redeem(redeemAmt, this.savingsRateContract)
 
-          this.$eventBus.$emit('tx-submitted', sendResult)
+          emitter.emit('tx-submitted', sendResult)
 
           this.$log(sendResult)
 
           await sendResult.confirmation(1)
 
-          this.$eventBus.$emit('refresh-holdings')
+          emitter.emit('refresh-holdings')
           await this.updateTotals()
         } catch(e){
           this.handleWalletError(e, 'Unable To Redeem KSR', 'We were unable to redeem KSR for kUSD.')
         } finally {
           this.txPending = false
-          this.$eventBus.$emit('tx-finished')
+          emitter.emit('tx-finished')
           this.redeemInput = null
         }
       },

@@ -7,17 +7,18 @@
 
 <script>
 import Mixins from "@/mixins";
+import emitter from "@/bus";
 
 export default {
   name: 'PendingTxInfo',
   mixins: [Mixins],
   mounted() {
-    this.$eventBus.$on('tx-submitted', (operation) => {
+    emitter.on('tx-submitted', (operation) => {
       this.currentTx = operation.opHash
       this.show = true
     })
 
-    this.$eventBus.$on('tx-finished', () => {
+    emitter.on('tx-finished', () => {
       this.currentTx = null
       this.show = false
     })

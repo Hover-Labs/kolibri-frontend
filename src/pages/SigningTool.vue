@@ -46,7 +46,7 @@
               <div class="field is-grouped is-grouped-right">
                 <div class="control">
                   <button @click="signPayload" v-if="$store.wallet !== null" :disabled="signatureResult !== null" class="button is-primary">Sign Message</button>
-                  <button class="button is-primary" @click="$eventBus.$emit('wallet-connect-request')" v-else>Connect Wallet</button>
+                  <button class="button is-primary" @click="emitter.emit('wallet-connect-request')" v-else>Connect Wallet</button>
                 </div>
               </div>
             </div>
@@ -59,6 +59,7 @@
 
 <script>
   import { TezosLanguageUtil } from 'conseiljs'
+  import emitter from "@/bus";
 
   export default {
     name: "SigningTool",
@@ -66,6 +67,7 @@
       return {
         message: null,
         signatureResult: null,
+        emitter,
       }
     },
     methods: {

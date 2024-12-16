@@ -107,7 +107,8 @@
 <script>
 import Mixins from "@/mixins";
 import BigNumber from 'bignumber.js'
-import Popover from "@/components/Popover";
+import Popover from "@/components/Popover.vue";
+import emitter from "@/bus";
 
 export default {
   name: 'Deposit',
@@ -135,7 +136,7 @@ export default {
         let depositResult = await this
                                     .ovenClient(this.ovenAddress)
                                     .deposit(depositAmtMutez)
-        this.$eventBus.$emit("oven-tx-submitted", depositResult, this.ovenAddress, 'deposit')
+        emitter.emit("oven-tx-submitted", depositResult, this.ovenAddress, 'deposit')
         this.$emit('close-requested')
       } catch (e) {
         this.handleWalletError(e, "Unable to deposit", "There was an issue with the deposit request.")

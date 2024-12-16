@@ -49,8 +49,9 @@
 
 <script>
 import Mixins from "@/mixins";
-import Farm from "@/components/Farm";
+import Farm from "@/components/Farm.vue";
 import BigNumber from "bignumber.js";
+import emitter from "@/bus";
 
 export default {
   name: 'Farming',
@@ -59,9 +60,9 @@ export default {
     if (this.$store.walletPKH !== null){
       this.$nextTick(this.updatekDAOHoldings)
     } else {
-      this.$eventBus.$on('wallet-connected', this.updatekDAOHoldings)
+      emitter.on('wallet-connected', this.updatekDAOHoldings)
     }
-    this.$eventBus.$on('refresh-kdao-holdings', this.updatekDAOHoldings)
+    emitter.on('refresh-kdao-holdings', this.updatekDAOHoldings)
   },
   data(){
     return {
@@ -89,6 +90,7 @@ export default {
   },
   methods: {
     async updateClaimableRewards({contract, estimatedRewards}){
+      console.log('Updating claimable rewards for contract:', contract, estimatedRewards);
       if (this.globalClaimableRewards[contract] === undefined){ return }
       this.$set(
         this.globalClaimableRewards[contract],
@@ -109,25 +111,22 @@ export default {
 
         const sendResult = await batch.send()
 
-        this.$eventBus.$emit('tx-submitted', sendResult)
+        emitter.emit('tx-submitted', sendResult)
 
         await sendResult.confirmation(1)
 
         this.globalClaimableRewards = {}
-        this.$eventBus.$emit('refresh-farms')
+        emitter.emit('refresh-farms')
       } catch (e) {
         console.error(e)
       } finally {
         this.networkSending = false
-        this.$eventBus.$emit('tx-finished')
+        emitter.emit('tx-finished')
       }
     },
     addContractHoldings(contractHoldingsInfo){
-      this.$set(
-        this.globalClaimableRewards,
-        contractHoldingsInfo.contractAddress,
-        contractHoldingsInfo
-      )
+      console.log('Adding contract holdings:', contractHoldingsInfo);
+      this.globalClaimableRewards[contractHoldingsInfo.contractAddress] = contractHoldingsInfo
     },
     async updatekDAOHoldings(){
       this.$store.kdaoHoldings = null

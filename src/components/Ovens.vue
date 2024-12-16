@@ -58,21 +58,23 @@
 </template>
 
 <script>
-import Oven from "@/components/Oven"
-import OvenManageModal from "@/components/OvenManageModal"
+import { reactive } from 'vue';
 import Mixins from '@/mixins'
+import Oven from "@/components/Oven.vue"
+import OvenManageModal from "@/components/OvenManageModal.vue"
 
 import _ from 'lodash'
-import OvenDelegateModal from "@/components/OvenDelegateModal";
-import NewOvenModal from "@/components/NewOvenModal";
+import OvenDelegateModal from "@/components/OvenDelegateModal.vue";
+import NewOvenModal from "@/components/NewOvenModal.vue";
+import emitter from "@/bus";
 
 export default {
   name: 'Ovens',
   mixins: [Mixins],
   async created(){
     await this.updateOvens()
-    this.$eventBus.$on('refresh-all-ovens', async () => {
-      this.$set(this.$store, 'ownedOvens', null)
+    emitter.on('refresh-all-ovens', async () => {
+      this.$store.ownedOvens =  null
       await this.updateOvens()
     })
   },
@@ -124,7 +126,7 @@ export default {
             acc[ovenAddress] = null
             return acc
           }, {})
-      this.$set(this.$store, 'ownedOvens', ownedOvens)
+      this.$store.ownedOvens = reactive(ownedOvens)
 
       // In electron land we listen for this event to know to start doing integration stuff
       window.dispatchEvent(new CustomEvent('owned-ovens', {detail: {ownedOvens}}))
@@ -147,6 +149,9 @@ export default {
       this.modal.manage.ovenAddress = null
       this.modal.manage.requestedPage = null
     },
+  },
+  beforeUnmount() {
+    emitter.off('refresh-all-ovens')
   },
   components: {
     OvenDelegateModal,

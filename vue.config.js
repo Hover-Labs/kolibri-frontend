@@ -4,13 +4,14 @@ module.exports = {
     devServer: {
         host: '0.0.0.0',
         hot: true,
-        disableHostCheck: true,
-        before(app, server) {
+        allowedHosts: 'all',
+        setupMiddlewares(middlewares, devServer) {
             chokidar.watch([
                 'kolibri-docs/**/*'
             ]).on('all', function() {
-                server.sockWrite(server.sockets, 'content-changed');
-            })
+                devServer.sockWrite(devServer.sockets, 'content-changed');
+            });
+            return middlewares;
         },
     },
     chainWebpack: config => {
@@ -25,11 +26,11 @@ module.exports = {
         config.output.filename('js/[name].[hash:8].js')
         config.output.chunkFilename('js/[name].[hash:8].js')
     },
-    publicPath: process.env['IPFS_BUILD'] ? './' : '/',
+    publicPath: import.meta.env['IPFS_BUILD'] ? './' : '/',
     css: {
         loaderOptions: {
             css: {
-                url: !process.env['IPFS_BUILD'],
+                url: !import.meta.env['IPFS_BUILD'],
             }
         }
     }

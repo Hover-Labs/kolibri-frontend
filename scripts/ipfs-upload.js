@@ -1,8 +1,8 @@
 const ipfsClient = require('ipfs-http-client');
 const { Agent } = require('https');
 
-const ipfsAuth = process.env['IPFS_AUTH'];
-const ipfsURL = process.env['IPFS_URL'];
+const ipfsAuth = import.meta.env['IPFS_AUTH'];
+const ipfsURL = import.meta.env['IPFS_URL'];
 
 if (!ipfsURL) {
   console.error("Must set IPFS_URL");

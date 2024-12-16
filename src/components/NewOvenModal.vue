@@ -85,7 +85,8 @@
 <script>
 import Mixins from "@/mixins"
 import _ from "lodash";
-import BakerInfo from "@/components/BakerInfo";
+import BakerInfo from "@/components/BakerInfo.vue";
+import emitter from "@/bus";
 
 export default {
   name: 'NewOvenModal',
@@ -155,7 +156,7 @@ export default {
             this.selectedDelegate !== null &&
             this.selectedDelegate !== ''){
           result = await this.ovenClient(ovenAddress).setBaker(this.selectedDelegate)
-          this.$eventBus.$emit("oven-tx-submitted", result, ovenAddress, 'set baker')
+          emitter.emit("oven-tx-submitted", result, ovenAddress, 'set baker')
         }
 
         this.createdOven = false

@@ -151,7 +151,8 @@
 <script>
 import Mixins from "@/mixins";
 import BigNumber from "bignumber.js";
-import Popover from "@/components/Popover";
+import Popover from "@/components/Popover.vue";
+import emitter from "@/bus";
 
 BigNumber.config({ POW_PRECISION: 18 })
 
@@ -180,7 +181,7 @@ export default {
         let repayResult = await this.ovenClient(this.ovenAddress).repay(
           repayAmt.toFixed()
         );
-        this.$eventBus.$emit(
+        emitter.emit(
           "oven-tx-submitted",
           repayResult,
           this.ovenAddress,

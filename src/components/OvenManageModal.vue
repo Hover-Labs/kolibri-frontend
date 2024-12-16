@@ -65,10 +65,10 @@
 <script>
 import Mixins from "@/mixins";
 
-import Borrow from "@/components/modal-subviews/Borrow";
-import Repay from "@/components/modal-subviews/Repay";
-import Deposit from "@/components/modal-subviews/Deposit";
-import Withdraw from "@/components/modal-subviews/Withdraw";
+import Borrow from "@/components/modal-subviews/Borrow.vue";
+import Repay from "@/components/modal-subviews/Repay.vue";
+import Deposit from "@/components/modal-subviews/Deposit.vue";
+import Withdraw from "@/components/modal-subviews/Withdraw.vue";
 
 export default {
   name: "OvenManageModal",
